@@ -93,7 +93,7 @@ class Worksheet(object):
 
     @property
     def cols(self):
-        return self._rows
+        return self._cols
 
     @property
     def join_lod_exclude_overrides(self):
