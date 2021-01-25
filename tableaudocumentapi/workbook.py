@@ -32,7 +32,7 @@ class Workbook(object):
         self._worksheets = self._prepare_worksheets(
             self._workbookRoot, self._datasource_index
         )
-        
+
         self._windows = list(map(Window, self._workbookRoot.findall('./windows/window')))
         self._actions = list(map(Action, self._workbookRoot.findall('./actions/action')))
 
@@ -43,7 +43,7 @@ class Workbook(object):
     @property
     def worksheets(self):
         return self._worksheets
-    
+
     @property
     def windows(self):
         return self._windows
@@ -51,6 +51,10 @@ class Workbook(object):
     @property
     def filename(self):
         return self._filename
+
+    @property
+    def actions(self):
+        return self._actions
 
     def save(self):
         """
