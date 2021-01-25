@@ -10,7 +10,7 @@ class ActionLink(object):
         return self._expression
 
     @expression.setter
-    def name(self, value):
+    def expression(self, value):
         self._expression = value
         self._xml.set('expression', value)
 
