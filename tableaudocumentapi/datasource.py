@@ -104,8 +104,9 @@ class ConnectionParser(object):
         connections = list(map(Connection, self._dsxml.findall("./connection[@class='federated']")))
         # 'sqlproxy' connections (Tableau Server Connections) are not embedded into named-connection elements
         # extract them manually for now
-        if self._dsxml.findall("./connection[@class='sqlproxy']") is not None :
-            connections.extend(map(Connection, self._dsxml.findall("./connection[@class='sqlproxy']")))
+
+        #Ignore sqlproxy datasources as we do not want to modify them in our current issue
+        #connections.extend(map(Connection, self._dsxml.findall("./connection[@class='sqlproxy']")))
         return connections
 
     def _extract_legacy_connection(self):
