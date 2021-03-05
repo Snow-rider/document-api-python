@@ -32,7 +32,7 @@ class GroupFilter(object):
 
     def __init__(self, groupfilterXMLelement):
         self._grpFilterXML = groupfilterXMLelement
-        self._level = self._grpFilterXML.get('level').strip('[').strip(']')
+        self._level = self._grpFilterXML.get('level').strip('[').strip(']') if self._grpFilterXML.get('level') is not None else None
         self._member = self._grpFilterXML.get('member')
 
     @property
