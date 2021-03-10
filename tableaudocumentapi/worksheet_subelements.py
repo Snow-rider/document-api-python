@@ -35,7 +35,6 @@ class LayoutOptions(object):
         keys: strings to be changed
         values: target value of change per key
         """
-
         for run_el_xml in self._run_elements:
             if ds_name in run_el_xml.text:
                 to_be_replaced = list(f for f in keyword_dictionary.keys() if f in run_el_xml.text)

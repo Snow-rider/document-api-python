@@ -43,7 +43,7 @@ class Worksheet(object):
         return self._worksheet_name
 
     def get_names_of_dependency_datasources(self):
-        sub_datasources = self._datasources.findall('./datasources')
+        sub_datasources = self._datasources.findall('./datasource')
         datasource_names = list(dsxml.get('name') for dsxml in sub_datasources)
         print(datasource_names)
         return datasource_names
@@ -57,7 +57,7 @@ class Worksheet(object):
             for ds_dep in self._datasource_dependencies:
                 if ds_dep.dependency_datasource_name == ds:
                     # column name is enough as it seems that the columns mirror column instances in this case
-                    names_per_ds[ds] = list(cl.name for cl in ds_dep.columns)
+                    names_per_ds[ds] = list(cl.column_name for cl in ds_dep.columns)
         return names_per_ds
 
     @property
@@ -116,7 +116,7 @@ class Worksheet(object):
         return self._manual_sorts
 
     @property
-    def sort(self):
+    def sorts(self):
         return self._sorts
 
     @property
