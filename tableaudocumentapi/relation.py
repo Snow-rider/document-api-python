@@ -19,7 +19,7 @@ class ConnectionRelation(object):
         self._datasource_name = relationxml.get('name')
         self._table_name = relationxml.get('table')
         self._has_columns = has_columns
-        self._columns = list(Column(col)for col in columns)
+        self._columns = list(Column(col)for col in columns) if has_columns else None
 
     @property
     def connection_name(self):
@@ -61,5 +61,5 @@ class ConnectionRelation(object):
 
     @staticmethod
     def get_relation_columns(relationxml):
-        columns = relationxml.findall('columns')
-        return True if columns else False, columns
+        columns = relationxml.find('columns').findall('column') if relationxml.find('columns') is not None else None
+        return True if columns is not None else False, columns
