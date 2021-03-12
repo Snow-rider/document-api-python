@@ -45,7 +45,6 @@ class Worksheet(object):
     def get_names_of_dependency_datasources(self):
         sub_datasources = self._datasources.findall('./datasource')
         datasource_names = list(dsxml.get('name') for dsxml in sub_datasources)
-        print(datasource_names)
         return datasource_names
 
     def get_names_of_columns_per_datasource(self):
