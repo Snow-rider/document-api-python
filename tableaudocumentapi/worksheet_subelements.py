@@ -35,7 +35,6 @@ class LayoutOptions(object):
         keys: strings to be changed
         values: target value of change per key
         """
-
         for run_el_xml in self._run_elements:
             if ds_name in run_el_xml.text:
                 to_be_replaced = list(f for f in keyword_dictionary.keys() if f in run_el_xml.text)
@@ -60,16 +59,40 @@ class WorksheetStyleRuleFormat(object):
         self._field_text = value
         self._xml.set('field', value)
 
+
+class WorksheetStyleRuleEncodingMap(object):
+    """Represents encoding xml element within style-rule."""
+
+    def __init__(self, encodingxmlelement):
+        self._xml = encodingxmlelement
+        self._bucket = self._xml.find('bucket').text
+
+    @property
+    def bucket(self):
+        return self._bucket
+
+    @bucket.setter
+    def bucket(self, value):
+        self._bucket = value
+        self._xml.find('bucket').text = value
+
+
 class WorksheetStyleRuleEncoding(object):
     """Represents encoding xml element within style-rule."""
 
     def __init__(self, encodingxmlelement):
         self._xml = encodingxmlelement
         self._field_text = self._xml.get('field')
+        self._map = list(map(WorksheetStyleRuleEncodingMap, self._xml.findall('./map'))) if \
+            self._xml.findall('./map') else []
 
     @property
     def field_text(self):
         return self._field_text
+
+    @property
+    def map(self):
+        return self._map
 
     @field_text.setter
     def field_text(self, value):

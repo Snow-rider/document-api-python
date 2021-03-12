@@ -32,7 +32,7 @@ class GroupFilter(object):
 
     def __init__(self, groupfilterXMLelement):
         self._grpFilterXML = groupfilterXMLelement
-        self._level = self._grpFilterXML.get('level').strip('[').strip(']')
+        self._level = self._grpFilterXML.get('level').strip('[').strip(']') if self._grpFilterXML.get('level') else ""
         self._member = self._grpFilterXML.get('member')
 
     @property
@@ -64,15 +64,15 @@ class Filter(object):
 
         self._filterXML = filterxmlelement
 
-        self._on_datasource_and_column = self._filterXML.get('column').split('.') # first element is ds name, 2nd is field name
-        self._on_datasource = self._on_datasource_and_column[0].strip('[').strip(']') if len(self._on_datasource_and_column) > 0 else ""
-        self._on_column = self._on_datasource_and_column[1].strip('[').strip(']') if len(self._on_datasource_and_column) > 1 else ""
+        self._on_datasource_and_column = self._filterXML.get('column') # first element is ds name, 2nd is field name
+        self._on_datasource = self._on_datasource_and_column.split('].[')[0].strip('[').strip(']') if self._on_datasource_and_column else ""
+        self._on_column = self._on_datasource_and_column.split('].[')[1].strip('[').strip(']') if self._on_datasource_and_column else ""
 
-        self._groupfilters = list(map(GroupFilter, self._filterXML.findall('./groupfilter/groupfilter')))
+        self._groupfilters = list(map(GroupFilter, self._filterXML.findall('./groupfilter/groupfilter'))) if self._filterXML.findall('./groupfilter/groupfilter') else []
 
     @property
     def groupfilters(self):
-        return self.groupfilters
+        return self._groupfilters
 
     @property
     def on_datasource(self):
@@ -87,7 +87,7 @@ class Filter(object):
         formatted_value = value.strip('[').strip(']')
         new_value = self._on_datasource_and_column.replace(self._on_datasource, formatted_value)
         self._on_datasource = formatted_value
-        self._on_datasource_and_column = new_value
+        self._on_datasource_and_column = '[{}].[{}]'.format(self._on_datasource, self._on_column)
         self._filterXML.set('column', new_value)
 
     @on_column.setter
@@ -95,7 +95,7 @@ class Filter(object):
         formatted_value = value.strip('[').strip(']')
         new_value = self._on_datasource_and_column.replace(self._on_column, formatted_value)
         self._on_column = formatted_value
-        self._on_datasource_and_column = new_value
+        self._on_datasource_and_column = '[{}].[{}]'.format(self._on_datasource, self._on_column)
         self._filterXML.set('column', new_value)
 
 
@@ -127,15 +127,15 @@ class Sort(object):
         self._xml = sortxmlelement
         self._on_column_name = self._xml.get('column')
         self._buckets = list(map(WorksheetBucket, self._xml.findall('./dictionary/bucket')))
-        
+
     @property
     def buckets(self):
         return self._buckets
-    
+
     @property
     def on_column_name(self):
         return self._on_column_name
-    
+
     @on_column_name.setter
     def on_column_name(self, value):
         self._on_column_name = value
