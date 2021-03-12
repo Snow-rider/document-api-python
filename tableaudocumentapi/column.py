@@ -9,10 +9,10 @@ class Column(object):
 
         self._columnxml = columnxmlelement
         self._calculationxml = calculation_xml
-        self._column_name = columnxmlelement.get('name').strip('[').strip(']') if columnxmlelement.get('name') is not None else None
+        self._column_name = columnxmlelement.get('name').strip('[').strip(']') if columnxmlelement.get('name') else ''
         self._has_aliases = has_aliases
         self._is_calculation = is_calculation
-        self._calculation_formula = calculation_xml.get('formula') if is_calculation else None
+        self._calculation_formula = calculation_xml.get('formula') if is_calculation else ''
         self._aliases_list = list(ColumnAlias(clm) for clm in aliases_list_xml)
 
 
@@ -50,7 +50,7 @@ class Column(object):
     @staticmethod
     def set_calculation(columnxmlelement):
         calculation_el = columnxmlelement.find('calculation')
-        return True if not calculation_el is None  else False, calculation_el
+        return True if calculation_el else False, calculation_el
 
     @staticmethod
     def set_aliases(columnxmlelement):

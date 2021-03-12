@@ -120,13 +120,15 @@ class SliceColumn(object):
 
 
 class Sort(object):
-    """A class to describe sort element in the worksheet."""
+    """A class to describe sort element in the worksheet. 
+       Also used to describe manual-sort & natural-sort (although for those buckets list is empty)"""
 
     def __init__(self, sortxmlelement):
 
         self._xml = sortxmlelement
         self._on_column_name = self._xml.get('column')
-        self._buckets = list(map(WorksheetBucket, self._xml.findall('./dictionary/bucket')))
+        self._buckets_xml = self._xml.findall('./dictionary/bucket')
+        self._buckets = list(map(WorksheetBucket, self._buckets_xml)) if len(self._buckets_xml) > 0 else []
 
     @property
     def buckets(self):
