@@ -32,7 +32,7 @@ class GroupFilter(object):
 
     def __init__(self, groupfilterXMLelement):
         self._grpFilterXML = groupfilterXMLelement
-        self._level = self._grpFilterXML.get('level').strip('[').strip(']') if self._grpFilterXML.get('level') is not None else None
+        self._level = self._grpFilterXML.get('level').strip('[').strip(']') if self._grpFilterXML.get('level') else ""
         self._member = self._grpFilterXML.get('member')
 
     @property
@@ -65,10 +65,10 @@ class Filter(object):
         self._filterXML = filterxmlelement
 
         self._on_datasource_and_column = self._filterXML.get('column') # first element is ds name, 2nd is field name
-        self._on_datasource = self._on_datasource_and_column.split('].[')[0].strip('[').strip(']') if len(self._on_datasource_and_column) is not None else ""
-        self._on_column = self._on_datasource_and_column.split('].[')[1].strip('[').strip(']') if len(self._on_datasource_and_column) is not None else ""
+        self._on_datasource = self._on_datasource_and_column.split('].[')[0].strip('[').strip(']') if self._on_datasource_and_column else ""
+        self._on_column = self._on_datasource_and_column.split('].[')[1].strip('[').strip(']') if self._on_datasource_and_column else ""
 
-        self._groupfilters = list(map(GroupFilter, self._filterXML.findall('./groupfilter/groupfilter'))) if self._filterXML.findall('./groupfilter/groupfilter') is not None else None
+        self._groupfilters = list(map(GroupFilter, self._filterXML.findall('./groupfilter/groupfilter'))) if self._filterXML.findall('./groupfilter/groupfilter') else []
 
     @property
     def groupfilters(self):
@@ -77,7 +77,6 @@ class Filter(object):
     @property
     def on_datasource(self):
         return self._on_datasource
-
 
     @property
     def on_column(self):
@@ -128,15 +127,15 @@ class Sort(object):
         self._xml = sortxmlelement
         self._on_column_name = self._xml.get('column')
         self._buckets = list(map(WorksheetBucket, self._xml.findall('./dictionary/bucket')))
-        
+
     @property
     def buckets(self):
         return self._buckets
-    
+
     @property
     def on_column_name(self):
         return self._on_column_name
-    
+
     @on_column_name.setter
     def on_column_name(self, value):
         self._on_column_name = value

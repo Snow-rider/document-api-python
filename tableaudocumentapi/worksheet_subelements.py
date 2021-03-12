@@ -84,7 +84,7 @@ class WorksheetStyleRuleEncoding(object):
         self._xml = encodingxmlelement
         self._field_text = self._xml.get('field')
         self._map = list(map(WorksheetStyleRuleEncodingMap, self._xml.findall('./map'))) if \
-            self._xml.findall('./map') is not None else None
+            self._xml.findall('./map') else []
 
     @property
     def field_text(self):
