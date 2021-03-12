@@ -6,6 +6,7 @@ from tableaudocumentapi.xfile import xml_open
 from tableaudocumentapi.worksheet import Worksheet
 from tableaudocumentapi.window import Window
 from tableaudocumentapi.action import Action
+from tableaudocumentapi.shared_view import SharedView
 
 
 class Workbook(object):
@@ -35,6 +36,8 @@ class Workbook(object):
 
         self._windows = list(map(Window, self._workbookRoot.findall('./windows/window')))
         self._actions = list(map(Action, self._workbookRoot.findall('./actions/action')))
+        self._shared_views_xmls = self._workbookRoot.findall('./shared-views/shared-view')
+        self._shared_views = list(map(SharedView, self._shared_views_xmls)) if bool(self._shared_views_xmls) else []
 
 
     @property
@@ -56,7 +59,11 @@ class Workbook(object):
     @property
     def actions(self):
         return self._actions
-
+    
+    @property
+    def shared_views(self):
+        return self._shared_views
+    
     def save(self):
         """
         Call finalization code and save file.

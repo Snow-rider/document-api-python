@@ -27,7 +27,7 @@ class Worksheet(object):
         self._manual_sort = Sort(self._manual_sort_xml) if self._manual_sort_xml else None
         self._sorts = list(map(Sort, self._worksheetViewXmlElement.findall('./sort')))
         self._natural_sort_xml = self._worksheetViewXmlElement.find('./natural-sort')
-        self._natural_sort = Sort(self._natural_sort_xml) if self._natural_sort else None
+        self._natural_sort = Sort(self._natural_sort_xml) if self._natural_sort_xml else None
         self._slices_columns = list(map(SliceColumn, self._worksheetViewXmlElement.findall('./slices/column')))
         self._dependent_on_datasources = self.get_names_of_dependency_datasources()  # list of names
         self._datasources_dependent_on_columns = self.get_names_of_columns_per_datasource()
@@ -111,10 +111,6 @@ class Worksheet(object):
     @property
     def filters(self):
         return self._filters
-
-    @property
-    def manual_sorts(self):
-        return self._manual_sorts
 
     @property
     def sorts(self):
