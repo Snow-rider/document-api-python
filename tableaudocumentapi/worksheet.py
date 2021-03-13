@@ -1,4 +1,6 @@
-from tableaudocumentapi.worksheet_view_subelements import DatasourceDependency, Filter, SliceColumn, Sort
+from tableaudocumentapi.worksheet_view_subelements import SliceColumn, Sort
+from tableaudocumentapi.filter import Filter
+from tableaudocumentapi.datasource_dependency import DatasourceDependency
 from tableaudocumentapi.worksheet_subelements import LayoutOptions, WorksheetPane, WorksheetStyleRule, WorksheetRowsOrCols, JoinLodExcludeOverrides
 
 class Worksheet(object):
