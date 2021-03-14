@@ -53,7 +53,7 @@ class GroupFilterParent(GroupFilter):
     def __init__(self, groupfilterParentXMLelement):
         GroupFilter.__init__(self, groupfilterParentXMLelement)
         self._grpfilterXML = groupfilterParentXMLelement
-        self._expression = self._grpfilterXML.get('expression')
+        self._expression = self._grpfilterXML.get('expression') if self._grpfilterXML else None
         self._child_group_filters = list(map(GroupFilter, self._grpfilterXML.findall('./groupfilter'))) if \
             bool(self._grpfilterXML.findall('./groupfilter')) else []
 

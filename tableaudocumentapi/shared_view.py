@@ -1,4 +1,5 @@
-from tableaudocumentapi.worksheet_view_subelements import DatasourceDependency, Filter
+from tableaudocumentapi.datasource_dependency import DatasourceDependency
+from tableaudocumentapi.filter import Filter
 class SharedView(object):
     """A class representing shared view object."""
 

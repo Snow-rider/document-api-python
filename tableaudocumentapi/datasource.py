@@ -10,6 +10,7 @@ from tableaudocumentapi.multilookup_dict import MultiLookupDict
 from tableaudocumentapi.xfile import xml_open
 from tableaudocumentapi.column import Column
 from tableaudocumentapi.columnInstance import ColumnInstance
+from tableaudocumentapi.datasource_group import DatasourceGroup
 from tableaudocumentapi.extract import DatasourceExtract
 from tableaudocumentapi.style_encoding import StyleEncoding
 
@@ -100,7 +101,7 @@ class ConnectionParser(object):
         self._dsversion = version
 
     def _extract_federated_connections(self):
-        
+
         connections = list(map(Connection, self._dsxml.findall("./connection[@class='federated']")))
         # 'sqlproxy' connections (Tableau Server Connections) are not embedded into named-connection elements
         # extract them manually for now
@@ -130,7 +131,7 @@ class RelationParser(object):
 
     def get_relations(self):
         """Finds and return all relation elements for federated connections within the data source."""
-        
+
         relations = list(map(ConnectionRelation, self._dsxml.findall('./connection/relation')))
         return relations
 
@@ -161,8 +162,10 @@ class Datasource(object):
         self._fields = None
         self._columns = list(map(Column, self._datasourceXML.findall('column')))
         self._column_instances = list(ColumnInstance(clmInst) for clmInst in self._datasourceXML.findall('column-instance'))
+        self._groups = list(DatasourceGroup(grpInst) for grpInst in self._datasourceXML.findall('group'))
         self._extract = DatasourceExtract(self._datasourceXML.find('extract'))
         self._style_encoding = StyleEncoding(self._datasourceXML.find('style/*/encoding'))
+
 
     @classmethod
     def from_file(cls, filename):
@@ -253,7 +256,7 @@ class Datasource(object):
     @property
     def connections(self):
         return self._connections
-    
+
     @property
     def connection_relations(self):
         return self._connection_relations
@@ -268,14 +271,18 @@ class Datasource(object):
         if not self._fields:
             self._fields = self._get_all_fields()
         return self._fields
-    
+
     @property
     def columns(self):
         return self._columns
-    
+
     @property
     def column_instances(self):
         return self._column_instances
+    
+    @property
+    def groups(self):
+        return self._groups
 
     @property
     def extract(self):
@@ -284,7 +291,7 @@ class Datasource(object):
     @property
     def style_encoding(self):
         return self._style_encoding
-    
+
     def _get_all_fields(self):
         # Some columns are represented by `column` tags and others as `metadata-record` tags
         # Find them all and chain them into one dictionary
