@@ -119,28 +119,12 @@ class WorksheetStyleRule(object):
     def formats(self):
         return self._formats
 
-class PaneEncodingText(object):
-    """text xml element within encodings."""
+class PaneEncodingChildElement(object):
+    """Color, text, lod, tooltip or wedge-size xml element within encoding XMl element."""
 
-    def __init__(self, etextxml):
-        self._xml = etextxml
-        self._column_attribute = self._xml.get('column')
-
-    @property
-    def column_attribute(self):
-        return self._column_attribute
-
-    @column_attribute.setter
-    def column_attribute(self, value):
-        self._column_attribute = value
-        self._xml.set('column', value)
-
-class PaneEncodingColor(object):
-    """color xml element within encodings."""
-
-    def __init__(self,ecolorxml):
-        self._xml = ecolorxml
-        self._column_attribute = self._xml.get('column')
+    def __init__(self, encchildelxml):
+        self._xml = encchildelxml
+        self._column_attribute = self._xml.get('column') if self._xml else ""
 
     @property
     def column_attribute(self):
@@ -156,8 +140,11 @@ class WorksheetPaneEncoding(object):
 
     def __init__(self, encodingsxmlelement):
         self._xml = encodingsxmlelement
-        self._texts = list(map(PaneEncodingText, self._xml.findall('./text'))) if self._xml else []
-        self._colors = list(map(PaneEncodingColor, self._xml.findall('./color'))) if self._xml else []
+        self._texts = list(map(PaneEncodingChildElement, self._xml.findall('./text'))) if self._xml else []
+        self._colors = list(map(PaneEncodingChildElement, self._xml.findall('./color'))) if self._xml else []
+        self._tooltips = list(map(PaneEncodingChildElement, self._xml.findall('./tooltip'))) if self._xml else []
+        self._lods = list(map(PaneEncodingChildElement, self._xml.findall('./lod'))) if self._xml else []
+        self._wedge_sizes = list(map(PaneEncodingChildElement, self._xml.findall('./wedge-size'))) if self._xml else []
 
     @property
     def texts(self):
@@ -166,6 +153,18 @@ class WorksheetPaneEncoding(object):
     @property
     def colors(self):
         return self._colors
+
+    @property
+    def tooltips(self):
+        return self._tooltips
+
+    @property
+    def lods(self):
+        return self._lods
+
+    @property
+    def wedge_sizes(self):
+        return self._wedge_sizes
 
 
 class WorksheetPaneCustomizedTooltip(object):
