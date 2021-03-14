@@ -7,6 +7,8 @@ from tableaudocumentapi.worksheet import Worksheet
 from tableaudocumentapi.window import Window
 from tableaudocumentapi.action import Action
 from tableaudocumentapi.shared_view import SharedView
+from tableaudocumentapi.datasource_dependency import DatasourceDependency
+from tableaudocumentapi.datasource_relationships import DatasourceRelationships
 
 
 class Workbook(object):
@@ -27,15 +29,15 @@ class Workbook(object):
         # prepare our datasource objects
         self._datasources = self._prepare_datasources(
             self._workbookRoot)  # self.workbookRoot.find('datasources')
-
         self._datasource_index = self._prepare_datasource_index(self._datasources)
-
-        self._worksheets = self._prepare_worksheets(
-            self._workbookRoot, self._datasource_index
-        )
-
+        self._ds_relationships_xml = self._workbookRoot.find('./datasource-relationships')
+        self._ds_relationships = DatasourceRelationships(self._ds_relationships_xml) if self._ds_relationships_xml else None
+        self._worksheets = self._prepare_worksheets(self._workbookRoot, self._datasource_index)
         self._windows = list(map(Window, self._workbookRoot.findall('./windows/window')))
-        self._actions = list(map(Action, self._workbookRoot.findall('./actions/action')))
+        self._actions_xml = self._workbookRoot.findall('./actions/action')
+        self._actions = list(map(Action, self._actions_xml)) if self._actions_xml else []
+        self._ds_dep_xml = self._workbookRoot.findall('./actions/datasource-dependencies')
+        self._actions_ds_deps = list(map(DatasourceDependency, self._ds_dep_xml)) if bool(self._ds_dep_xml) else []
         self._shared_views_xmls = self._workbookRoot.findall('./shared-views/shared-view')
         self._shared_views = list(map(SharedView, self._shared_views_xmls)) if bool(self._shared_views_xmls) else []
 
@@ -59,11 +61,19 @@ class Workbook(object):
     @property
     def actions(self):
         return self._actions
-    
+
     @property
     def shared_views(self):
         return self._shared_views
+
+    @property
+    def actions_ds_deps(self):
+        return self._actions_ds_deps
     
+    @property
+    def ds_relationships(self):
+        return self._ds_relationships
+
     def save(self):
         """
         Call finalization code and save file.

@@ -7,7 +7,8 @@ class SharedView(object):
 
         self._sw_el = sharedviewXmlElement
         self._shared_view_for_ds = self._sw_el.get('name')
-        self._datasource_dependencies = list(map(DatasourceDependency, self._sw_el.findall('./datasource-dependencies')))
+        self._ds_dep_xml = self._sw_el.findall('./datasource-dependencies')
+        self._datasource_dependencies = list(map(DatasourceDependency, self._ds_dep_xml)) if bool(self._ds_dep_xml) else []
         self._filters = list(map(Filter, self._sw_el.findall('./filter')))
         
     @property
