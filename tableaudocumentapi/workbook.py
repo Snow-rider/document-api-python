@@ -6,6 +6,7 @@ from tableaudocumentapi.xfile import xml_open
 from tableaudocumentapi.worksheet import Worksheet
 from tableaudocumentapi.window import Window
 from tableaudocumentapi.action import Action
+from tableaudocumentapi.dashboard import Dashboard
 
 
 class Workbook(object):
@@ -35,6 +36,7 @@ class Workbook(object):
 
         self._windows = list(map(Window, self._workbookRoot.findall('./windows/window')))
         self._actions = list(map(Action, self._workbookRoot.findall('./actions/action')))
+        self._dashboards = list(map(Dashboard, self._workbookRoot.findall('./dashboards/dashboard')))
 
     @property
     def datasources(self):
@@ -55,6 +57,10 @@ class Workbook(object):
     @property
     def actions(self):
         return self._actions
+
+    @property
+    def dashboards(self):
+        return self._dashboards
 
     def save(self):
         """
