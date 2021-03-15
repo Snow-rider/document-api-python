@@ -9,6 +9,8 @@ from tableaudocumentapi.action import Action
 from tableaudocumentapi.shared_view import SharedView
 from tableaudocumentapi.datasource_dependency import DatasourceDependency
 from tableaudocumentapi.datasource_relationships import DatasourceRelationships
+from tableaudocumentapi.dashboard import Dashboard
+
 
 
 class Workbook(object):
@@ -40,6 +42,8 @@ class Workbook(object):
         self._actions_ds_deps = list(map(DatasourceDependency, self._ds_dep_xml)) if bool(self._ds_dep_xml) else []
         self._shared_views_xmls = self._workbookRoot.findall('./shared-views/shared-view')
         self._shared_views = list(map(SharedView, self._shared_views_xmls)) if bool(self._shared_views_xmls) else []
+        self._actions = list(map(Action, self._workbookRoot.findall('./actions/action')))
+        self._dashboards = list(map(Dashboard, self._workbookRoot.findall('./dashboards/dashboard')))
 
 
     @property
@@ -73,6 +77,10 @@ class Workbook(object):
     @property
     def ds_relationships(self):
         return self._ds_relationships
+
+    def dashboards(self):
+        return self._dashboards
+
 
     def save(self):
         """
