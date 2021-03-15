@@ -17,7 +17,7 @@ class Dashboard(object):
 
         self._dependent_on_datasources = self.get_names_of_dependency_datasources()  # list of names
         self._datasources_dependent_on_columns = self.get_names_of_columns_per_datasource()
-        self._zones = list(map(Zone,self._worksheetXmlElement.findall('./zones')))
+        self._zones = self._worksheetXmlElement.find('./zone')
 
 
 
@@ -71,6 +71,43 @@ def datasources(self):
 def datasources_dependencies(self):
     return self._datasource_dependencies
 
+
 @property
 def zones(self):
     return self._zones
+
+@zones.setter
+def zones(self,value):
+    self._zones = value
+
+
+# def modify_zone_param(self,datasource_name, field_names_to_be_changed_dict):
+#
+#     zone_with_param = self._zones.findall('./zone//*zone[@param]')
+#
+#     for elt in zone_with_param:
+#         if elt.get('param') in datasource_name:
+#             for field in field_names_to_be_changed_dict.keys:
+#                 if field in elt.get('param'):
+#                     new_param = field_names_to_be_changed_dict[field]
+#                     elt.set('param',new_param)
+
+def modify_zones(self,datasource_name, field_names_to_be_changed_dict):
+
+    zone = self.zones
+
+    while zone:
+        if zone.get('param'):
+            if datasource_name in zone.get('param'):
+                for field in field_names_to_be_changed_dict.keys:
+                    if field in zone.get('param'):
+                        new_param = field_names_to_be_changed_dict[field]
+                        zone.set('param',new_param)
+
+        zone = zone.find('zone')
+
+    return new_zones
+
+
+
+
