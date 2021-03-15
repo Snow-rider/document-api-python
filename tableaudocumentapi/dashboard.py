@@ -106,7 +106,7 @@ def modify_zones(self,datasource_name, field_names_to_be_changed_dict):
 
         zone = zone.find('zone')
 
-    return new_zones
+    return zone
 
 
 
