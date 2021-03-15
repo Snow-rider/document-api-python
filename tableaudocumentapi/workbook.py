@@ -78,6 +78,7 @@ class Workbook(object):
     def ds_relationships(self):
         return self._ds_relationships
 
+    @property
     def dashboards(self):
         return self._dashboards
 

@@ -1,5 +1,5 @@
-from tableaudocumentapi.worksheet_view_subelements import DatasourceDependency, Filter, SliceColumn, Sort
 from tableaudocumentapi.worksheet_subelements import LayoutOptions, WorksheetPane, WorksheetStyleRule, WorksheetRowsOrCols, JoinLodExcludeOverrides
+from tableaudocumentapi.datasource_dependency import DatasourceDependency
 
 class Dashboard(object):
     """A class representing worksheet object."""
@@ -69,7 +69,7 @@ class Dashboard(object):
 
 
     @property
-    def datasources_dependencies(self):
+    def datasource_dependencies(self):
         return self._datasource_dependencies
 
 
@@ -93,7 +93,7 @@ class Dashboard(object):
     #                     new_param = field_names_to_be_changed_dict[field]
     #                     elt.set('param',new_param)
 
-    def modify_zones(self,datasource_name, field_names_to_be_changed_dict):
+    def modify_zones_old(self,datasource_name, field_names_to_be_changed_dict):
 
         zone = self.zones.find('./zone')
 
@@ -107,7 +107,20 @@ class Dashboard(object):
 
             zone = zone.find('./zone')
 
+
+
         return zone
+
+    def modify_zones(self, datasource_name, field_names_to_be_changed_dict):
+
+
+        for zone in self.zones.findall('.//zone/*/zone[@param]'):
+            if datasource_name in zone.get('param'):
+                for field in field_names_to_be_changed_dict.keys():
+                    if field in zone.get('param'):
+                        new_param = field_names_to_be_changed_dict[field]
+                        zone.set('param', new_param)
+
 
 
 
