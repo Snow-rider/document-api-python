@@ -166,7 +166,7 @@ class Datasource(object):
         self._groups = list(DatasourceGroup(grpInst) for grpInst in self._datasourceXML.findall('group'))
         self._extract = DatasourceExtract(self._datasourceXML.find('extract'))
         self._style_encoding = StyleEncoding(self._datasourceXML.find('style/*/encoding'))
-        self._ds_dep_xml = self._sw_el.findall('./datasource-dependencies')
+        self._ds_dep_xml = self._datasourceXML.findall('./datasource-dependencies')
         self._datasource_dependencies = list(map(DatasourceDependency, self._ds_dep_xml)) if bool(self._ds_dep_xml) else []
 
     @classmethod
@@ -281,7 +281,7 @@ class Datasource(object):
     @property
     def column_instances(self):
         return self._column_instances
-    
+
     @property
     def groups(self):
         return self._groups
@@ -293,7 +293,7 @@ class Datasource(object):
     @property
     def style_encoding(self):
         return self._style_encoding
-    
+
     @property
     def datasource_dependencies(self):
         return self._datasource_dependencies
