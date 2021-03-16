@@ -48,7 +48,7 @@ class WorksheetStyleRuleFormat(object):
 
     def __init__(self, formatxmlelement):
         self._xml = formatxmlelement
-        self._field_text = self._xml.get('format')
+        self._field_text = self._xml.get('field')
 
     @property
     def field_text(self):

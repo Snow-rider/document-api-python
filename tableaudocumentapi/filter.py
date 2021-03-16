@@ -4,7 +4,7 @@ class GroupFilter(object):
 
     def __init__(self, groupfilterXMLelement):
         self._grpFilterXML = groupfilterXMLelement
-        self._level = self._grpFilterXML.get('level').strip('[').strip(']') if self._grpFilterXML.get('level') else ""
+        self._level = self._grpFilterXML.get('level').strip('[').strip(']') if self._grpFilterXML.get('level') is not None else ""
         self._member = self._grpFilterXML.get('member')
         # some members can be just hardcoded values, therefore this check
         member_split = self._member.split('].[') if self._member else []
@@ -55,7 +55,7 @@ class GroupFilterParent(GroupFilter):
         self._grpfilterXML = groupfilterParentXMLelement
         self._expression = self._grpfilterXML.get('expression') if self._grpfilterXML else None
         self._child_group_filters = list(map(GroupFilter, self._grpfilterXML.findall('./groupfilter'))) if \
-            bool(self._grpfilterXML.findall('./groupfilter')) else []
+            self._grpfilterXML.findall('./groupfilter') is not None else []
 
     @property
     def expression(self):
@@ -115,8 +115,7 @@ class Filter(object):
         self._target_xml = self._filterXML.find('./target')
         self._target = Target(self._target_xml) if self._target_xml else None
         self._groupfilter_XML = self._filterXML.find('./groupfilter')
-        self._groupfilter = GroupFilterParent(self._groupfilter_XML) if self._groupfilter_XML else None
-
+        self._groupfilter = GroupFilterParent(self._groupfilter_XML) if (self._groupfilter_XML is not None) else None
 
     @property
     def target(self):
