@@ -1,6 +1,31 @@
 from tableaudocumentapi.worksheet_subelements import LayoutOptions, WorksheetPane, WorksheetStyleRule, WorksheetRowsOrCols, JoinLodExcludeOverrides
 from tableaudocumentapi.datasource_dependency import DatasourceDependency
 
+
+class ZoneParam(object):
+    """A class representing worksheet object."""
+
+    def __init__(self, zoneparamXmlElement):
+        """Constructor for XMl element representing Tableau worksheet with its children XML elements."""
+
+        self._zoneparamXmlElement = zoneparamXmlElement
+        self._param = self._zoneparamXmlElement.get('param')
+        self._param_datasource = self._param.split('].[')[0].strip('[').strip(']')
+
+    @property
+    def param(self):
+        return self._param
+
+    @param.setter
+    def param(self, value):
+        self._param = value
+        self._zoneparamXmlElement.set('param', value)
+
+    @property
+    def param_datasource(self):
+        return self._param_datasource
+
+
 class Dashboard(object):
     """A class representing worksheet object."""
 
@@ -17,7 +42,8 @@ class Dashboard(object):
 
         self._dependent_on_datasources = self.get_names_of_dependency_datasources()  # list of names
         self._datasources_dependent_on_columns = self.get_names_of_columns_per_datasource()
-        self._zones = self._worksheetXmlElement.find('./zones')
+        self._zones_xml = self._worksheetXmlElement.findall('./zones/zone/*/zone[@param]')
+        self._zones_with_param = list(map(ZoneParam, self._zones_xml)) if bool(self._zones_xml) else []
 
 
 
@@ -75,53 +101,22 @@ class Dashboard(object):
 
     @property
     def zones(self):
-        return self._zones
+        return self._zones_xml
 
     @zones.setter
     def zones(self,value):
-        self._zones = value
+        self._zones_xml = value
 
+    @property
+    def zones_with_param(self):
+        return self.zones_with_param
 
-    # def modify_zone_param(self,datasource_name, field_names_to_be_changed_dict):
+    # TODO: remove the follwoing function
+    # def modify_zones(self, datasource_name, field_names_to_be_changed_dict):
     #
-    #     zone_with_param = self._zones.findall('./zone//*zone[@param]')
-    #
-    #     for elt in zone_with_param:
-    #         if elt.get('param') in datasource_name:
-    #             for field in field_names_to_be_changed_dict.keys:
-    #                 if field in elt.get('param'):
+    #     for zone in self.zones.findall('.//zone/*/zone[@param]'):
+    #         if datasource_name in zone.get('param'):
+    #             for field in field_names_to_be_changed_dict.keys():
+    #                 if field in zone.get('param'):
     #                     new_param = field_names_to_be_changed_dict[field]
-    #                     elt.set('param',new_param)
-
-    def modify_zones_old(self,datasource_name, field_names_to_be_changed_dict):
-
-        zone = self.zones.find('./zone')
-
-        while zone:
-            if zone.get('param'):
-                if datasource_name in zone.get('param'):
-                    for field in field_names_to_be_changed_dict.keys:
-                        if field in zone.get('param'):
-                            new_param = field_names_to_be_changed_dict[field]
-                            zone.set('param',new_param)
-
-            zone = zone.find('./zone')
-
-
-
-        return zone
-
-    def modify_zones(self, datasource_name, field_names_to_be_changed_dict):
-
-
-        for zone in self.zones.findall('.//zone/*/zone[@param]'):
-            if datasource_name in zone.get('param'):
-                for field in field_names_to_be_changed_dict.keys():
-                    if field in zone.get('param'):
-                        new_param = field_names_to_be_changed_dict[field]
-                        zone.set('param', new_param)
-
-
-
-
-
+    #                     zone.set('param', new_param)
