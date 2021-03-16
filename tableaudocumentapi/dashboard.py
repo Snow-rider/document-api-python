@@ -100,16 +100,16 @@ class Dashboard(object):
 
 
     @property
-    def zones(self):
+    def zones_xml(self):
         return self._zones_xml
 
-    @zones.setter
-    def zones(self,value):
+    @zones_xml.setter
+    def zones_xml(self,value):
         self._zones_xml = value
 
     @property
     def zones_with_param(self):
-        return self.zones_with_param
+        return self._zones_with_param
 
     # TODO: remove the follwoing function
     # def modify_zones(self, datasource_name, field_names_to_be_changed_dict):
