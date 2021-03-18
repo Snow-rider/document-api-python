@@ -10,8 +10,8 @@ class GroupFilter(object):
         member_split = self._member.split('].[') if self._member else []
         assign_member = bool(len(member_split) == 2)
         # we only assign member_datasource & member_column if the length of the split is 2 (== not hard-coded value)
-        self._member_datasource = member_split[0].strip('&quot;[').strip(']') if assign_member else ""
-        self._member_column = member_split[1].strip('[').strip(']&quot;') if assign_member else ""
+        self._member_datasource = member_split[0].strip('&quot;[').strip(']').strip('["') if assign_member else ""
+        self._member_column = member_split[1].strip('[').strip(']"') if assign_member else ""
 
     @property
     def level(self):
@@ -38,7 +38,7 @@ class GroupFilter(object):
     @member_column.setter
     def member_column(self, value_column):
         self._member_column = value_column
-        new_member_value = '&quot[{ds}].[{col}&quot;'.format(ds=self._member_datasource,
+        new_member_value = '"[{ds}].[{col}]"'.format(ds=self._member_datasource,
                                                              col=value_column)
         self._member = new_member_value
         self._grpFilterXML.set('member', new_member_value)
@@ -56,6 +56,8 @@ class GroupFilterParent(GroupFilter):
         self._expression = self._grpfilterXML.get('expression') if self._grpfilterXML else None
         self._child_group_filters = list(map(GroupFilter, self._grpfilterXML.findall('./groupfilter'))) if \
             self._grpfilterXML.findall('./groupfilter') is not None else []
+        self._second_child_group_filters = list(map(GroupFilter, self._grpfilterXML.findall('./groupfilter/groupfilter'))) if \
+            self._grpfilterXML.findall('./groupfilter/groupfilter') is not None else []
 
     @property
     def expression(self):
@@ -71,15 +73,21 @@ class GroupFilterParent(GroupFilter):
     def child_group_filters(self):
         return self._child_group_filters
 
+    @property
+    def second_child_group_filters(self):
+        return self._second_child_group_filters
+
 
 class Target(object):
     """A class to describe target xml tag in filter."""
 
     def __init__(self, targetxmlelement):
         self._tgxml = targetxmlelement
-        self._target_field = self._tgxml.get('field') if self._tgxml else ""
-        self._target_field_datasource = self._target_field.split('].[')[0].strip('[').strip(']') if self._target_field else ""
-        self._target_field_column = self._target_field.split('].[')[1].strip('[').strip(']') if self._target_field else ""
+        self._target_field = self._tgxml.get('field') if self._tgxml is not None else ""
+        self._target_field_datasource = self._target_field.split('].[')[0].strip('[').strip(']') \
+            if self._target_field is not None else ""
+        self._target_field_column = self._target_field.split('].[')[1].strip('[').strip(']') \
+            if self._target_field is not None else ""
 
     @property
     def target_field(self):
@@ -97,7 +105,7 @@ class Target(object):
     def target_field_column(self, column_value):
         formatted_column_value = column_value.strip('[').strip(']')
         self._target_field_column = formatted_column_value
-        new_target_field_value = '[ds].[col]'.format(ds=self.target_field_datasource,
+        new_target_field_value = '[{ds}].[{col}]'.format(ds=self.target_field_datasource,
                                                      col=formatted_column_value)
         self._target_field = new_target_field_value
         self._tgxml.set('field', new_target_field_value)
@@ -113,7 +121,7 @@ class Filter(object):
         self._on_datasource = self._on_datasource_and_column.split('].[')[0].strip('[').strip(']') if self._on_datasource_and_column else ""
         self._on_column = self._on_datasource_and_column.split('].[')[1].strip('[').strip(']') if self._on_datasource_and_column else ""
         self._target_xml = self._filterXML.find('./target')
-        self._target = Target(self._target_xml) if self._target_xml else None
+        self._target = Target(self._target_xml) if (self._target_xml is not None) else None
         self._groupfilter_XML = self._filterXML.find('./groupfilter')
         self._groupfilter = GroupFilterParent(self._groupfilter_XML) if (self._groupfilter_XML is not None) else None
 

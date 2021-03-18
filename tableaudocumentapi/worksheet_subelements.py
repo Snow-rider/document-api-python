@@ -1,7 +1,9 @@
 import re
 
+
 class WorksheetBucket(object):
-    """Class describing generic Bucket element in the worksheet. Also describes column in join-lod-exclude-overrides element."""
+    """Class describing generic Bucket element in the worksheet. Also describes column in join-lod-exclude-overrides element.
+    and join-lod-include-overrides"""
 
     def __init__(self, bucketxml):
         self._bucketxml = bucketxml
@@ -11,11 +13,11 @@ class WorksheetBucket(object):
     def bucket_text(self):
         return self._bucket_text
 
-
     @bucket_text.setter
     def bucket_text(self, value):
         self._bucket_text = value
         self._bucketxml.text = value
+
 
 class LayoutOptions(object):
     """Describes layout-options sub element of worksheet."""
@@ -42,6 +44,7 @@ class LayoutOptions(object):
                     new_run_el_text = ''.join(run_el_xml.text.replace(field_name, keyword_dictionary[field_name])
                                               for field_name in to_be_replaced)
                     run_el_xml.text = new_run_el_text
+
 
 class WorksheetStyleRuleFormat(object):
     """Represents format xml element within style-rule."""
@@ -119,12 +122,13 @@ class WorksheetStyleRule(object):
     def formats(self):
         return self._formats
 
+
 class PaneEncodingChildElement(object):
     """Color, text, lod, tooltip or wedge-size xml element within encoding XMl element."""
 
     def __init__(self, encchildelxml):
         self._xml = encchildelxml
-        self._column_attribute = self._xml.get('column') if self._xml else ""
+        self._column_attribute = self._xml.get('column') if self._xml is not None else ""
 
     @property
     def column_attribute(self):
@@ -134,6 +138,7 @@ class PaneEncodingChildElement(object):
     def column_attribute(self, value):
         self._column_attribute = value
         self._xml.set('column', value)
+
 
 class WorksheetPaneEncoding(object):
     """Represents encoding at worksheet/../panes/pane/encoding."""
@@ -238,6 +243,7 @@ class WorksheetPane(object):
     def customized_tooltip(self):
         return self._customized_tooltip
 
+
 class WorksheetRowsOrCols(object):
     """Describes rows element in the worksheet.
     """
@@ -279,7 +285,20 @@ class WorksheetRowsOrCols(object):
             new_content = self._rowsorcolscontent.replace(matched, replacement)
             self.rowsorcolscontent = new_content
 
+
 class JoinLodExcludeOverrides(object):
+    """Describes join-lod-exclude-overrides element in the worksheet."""
+
+    def __init__(self, jeloxml):
+        self._xml = jeloxml
+        self._columns = list(map(WorksheetBucket, self._xml.findall('./column'))) if self._xml else None
+
+    @property
+    def columns(self):
+        return self._columns
+
+
+class JoinLodIncludeOverrides(object):
     """Describes join-lod-exclude-overrides element in the worksheet."""
 
     def __init__(self, jeloxml):

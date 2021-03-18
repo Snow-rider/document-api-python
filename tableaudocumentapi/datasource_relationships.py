@@ -19,11 +19,12 @@ class DatasourceRelationshipMap(object):
     @map_key.setter
     def map_key(self, value):
         self._map_key = value
+        self._xml.set('key', value)
 
     @map_value.setter
     def map_value(self, value):
         self._map_value = value
-
+        self._xml.set('value', value)
 
 class DatasourceRelationship(object):
     """A class describing datasource-relationship XML element(s) in datasource-relationships XML element."""

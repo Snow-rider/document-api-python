@@ -1,7 +1,8 @@
 from tableaudocumentapi.worksheet_view_subelements import SliceColumn, Sort
 from tableaudocumentapi.filter import Filter
 from tableaudocumentapi.datasource_dependency import DatasourceDependency
-from tableaudocumentapi.worksheet_subelements import LayoutOptions, WorksheetPane, WorksheetStyleRule, WorksheetRowsOrCols, JoinLodExcludeOverrides
+from tableaudocumentapi.worksheet_subelements import LayoutOptions, WorksheetPane, WorksheetStyleRule, \
+    WorksheetRowsOrCols, JoinLodExcludeOverrides, JoinLodIncludeOverrides
 
 class Worksheet(object):
     """A class representing worksheet object."""
@@ -20,16 +21,18 @@ class Worksheet(object):
         self._panes = list(map(WorksheetPane, self._worksheetTableXmlElement.findall('./panes/pane')))
         self._rows = WorksheetRowsOrCols( self._worksheetTableXmlElement.find('rows'))
         self._cols = WorksheetRowsOrCols(self._worksheetTableXmlElement.find('cols'))
-        self._join_lod_exclude_overrides = JoinLodExcludeOverrides(self._worksheetTableXmlElement.find('join-lod-exclude-override'))
+        self._join_lod_exclude_overrides = JoinLodExcludeOverrides(self._worksheetTableXmlElement.find('join-lod-exclude-overrides'))
+        self._join_lod_include_overrides = JoinLodIncludeOverrides(
+            self._worksheetTableXmlElement.find('join-lod-include-overrides'))
 
         self._datasources = self._worksheetViewXmlElement.find('./datasources')
         self._datasource_dependencies = list(map(DatasourceDependency, self._worksheetViewXmlElement.findall('./datasource-dependencies')))
         self._filters = list(map(Filter, self._worksheetViewXmlElement.findall('./filter')))
         self._manual_sort_xml = self._worksheetViewXmlElement.find('./manual-sort')
-        self._manual_sort = Sort(self._manual_sort_xml) if self._manual_sort_xml else None
+        self._manual_sort = Sort(self._manual_sort_xml) if self._manual_sort_xml is not None else None
         self._sorts = list(map(Sort, self._worksheetViewXmlElement.findall('./sort')))
         self._natural_sort_xml = self._worksheetViewXmlElement.find('./natural-sort')
-        self._natural_sort = Sort(self._natural_sort_xml) if self._natural_sort_xml else None
+        self._natural_sort = Sort(self._natural_sort_xml) if self._natural_sort_xml is not None else None
         self._slices_columns = list(map(SliceColumn, self._worksheetViewXmlElement.findall('./slices/column')))
         self._dependent_on_datasources = self.get_names_of_dependency_datasources()  # list of names
         self._datasources_dependent_on_columns = self.get_names_of_columns_per_datasource()
@@ -101,6 +104,10 @@ class Worksheet(object):
     @property
     def join_lod_exclude_overrides(self):
         return self._join_lod_exclude_overrides
+
+    @property
+    def join_lod_include_overrides(self):
+        return self._join_lod_include_overrides
 
     @property
     def datasources(self):
