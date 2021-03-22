@@ -36,10 +36,10 @@ class ViewPointTupleValue(object):
 
 
 class CardParam(object):
-    """A class representing worksheet object."""
+    """A class representing card (with param) object (in window XML)."""
 
     def __init__(self, cardparamXmlElement):
-        """Constructor for XMl element representing Tableau worksheet with its children XML elements."""
+        """Constructor for XMl element representing card with param XML."""
 
         self._cardparamXmlElement = cardparamXmlElement
         self._param = self._cardparamXmlElement.get('param')
@@ -78,10 +78,6 @@ class Window(object):
     @property
     def cards_xml(self):
         return self._cards_xml
-
-    @cards_xml.setter
-    def cards_xml(self,value):
-        self._cards_xml = value
 
     @property
     def cards_with_param(self):

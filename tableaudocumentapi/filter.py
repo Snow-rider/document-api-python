@@ -106,7 +106,7 @@ class Target(object):
         formatted_column_value = column_value.strip('[').strip(']')
         self._target_field_column = formatted_column_value
         new_target_field_value = '[{ds}].[{col}]'.format(ds=self.target_field_datasource,
-                                                     col=formatted_column_value)
+                                                         col=formatted_column_value)
         self._target_field = new_target_field_value
         self._tgxml.set('field', new_target_field_value)
 
