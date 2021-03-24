@@ -54,8 +54,8 @@ class GroupFilterParent(GroupFilter):
         GroupFilter.__init__(self, groupfilterParentXMLelement)
         self._grpfilterXML = groupfilterParentXMLelement
         self._expression = self._grpfilterXML.get('expression') if self._grpfilterXML else None
-        self._child_group_filters = list(map(GroupFilter, self._grpfilterXML.findall('./groupfilter'))) if \
-            self._grpfilterXML.findall('./groupfilter') is not None else []
+        self._child_group_filters = list(map(GroupFilter, self._grpfilterXML.findall('.//groupfilter'))) if \
+            self._grpfilterXML.findall('.//groupfilter') is not None else []
         self._second_child_group_filters = list(map(GroupFilter, self._grpfilterXML.findall('./groupfilter/groupfilter'))) if \
             self._grpfilterXML.findall('./groupfilter/groupfilter') is not None else []
 
