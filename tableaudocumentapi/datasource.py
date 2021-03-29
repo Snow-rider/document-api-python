@@ -260,6 +260,10 @@ class Datasource(object):
         return self._connections
 
     @property
+    def style_encoding(self):
+        return self._style_encoding
+
+    @property
     def connection_relations(self):
         return self._connection_relations
 

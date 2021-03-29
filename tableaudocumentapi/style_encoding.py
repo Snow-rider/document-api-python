@@ -22,7 +22,7 @@ class StyleEncoding(object):
 
         self._style_encoding_xml_element = styleEncodingXmlElement
         self._style_maps = list(StyleMap(sm) for sm in styleEncodingXmlElement.findall('map')) if \
-            styleEncodingXmlElement is not None else None
+            styleEncodingXmlElement else []
 
     @property
     def style_maps(self):

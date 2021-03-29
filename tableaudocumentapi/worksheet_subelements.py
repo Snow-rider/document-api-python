@@ -150,6 +150,7 @@ class WorksheetPaneEncoding(object):
         self._tooltips = list(map(PaneEncodingChildElement, self._xml.findall('./tooltip'))) if self._xml else []
         self._lods = list(map(PaneEncodingChildElement, self._xml.findall('./lod'))) if self._xml else []
         self._wedge_sizes = list(map(PaneEncodingChildElement, self._xml.findall('./wedge-size'))) if self._xml else []
+        self._shapes = list(map(PaneEncodingChildElement, self._xml.findall('./shape'))) if self._xml else []
 
     @property
     def texts(self):
@@ -170,6 +171,10 @@ class WorksheetPaneEncoding(object):
     @property
     def wedge_sizes(self):
         return self._wedge_sizes
+
+    @property
+    def shapes(self):
+        return self._shapes
 
 
 class WorksheetPaneCustomizedTooltip(object):

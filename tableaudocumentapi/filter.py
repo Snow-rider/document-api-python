@@ -43,6 +43,11 @@ class GroupFilter(object):
         self._member = new_member_value
         self._grpFilterXML.set('member', new_member_value)
 
+    @member.setter
+    def member(self, value):
+        self._member = value
+        self._grpFilterXML.set('member', value)
+
 
 class GroupFilterParent(GroupFilter):
     """
