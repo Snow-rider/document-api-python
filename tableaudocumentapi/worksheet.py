@@ -35,6 +35,8 @@ class Worksheet(object):
         self._natural_sort = Sort(self._natural_sort_xml) if self._natural_sort_xml is not None else None
         self._computed_sort_xml = self._worksheetViewXmlElement.find('./computed-sort')
         self._computed_sort = Sort(self._computed_sort_xml) if self._computed_sort_xml is not None else None
+        self._alphabetic_sort_xml = self._worksheetViewXmlElement.find('./alphabetic-sort')
+        self._alphabetic_sort = Sort(self._alphabetic_sort_xml) if self._alphabetic_sort_xml is not None else None
         self._slices_columns = list(map(SliceColumn, self._worksheetViewXmlElement.findall('./slices/column')))
         self._dependent_on_datasources = self.get_names_of_dependency_datasources()  # list of names
         self._datasources_dependent_on_columns = self.get_names_of_columns_per_datasource()
@@ -50,6 +52,10 @@ class Worksheet(object):
     @property
     def computed_sort(self):
         return self._computed_sort
+
+    @property
+    def alphabetic_sort(self):
+        return self._alphabetic_sort
 
     @property
     def worksheet_name(self):

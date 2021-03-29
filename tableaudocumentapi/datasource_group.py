@@ -17,6 +17,7 @@ class DatasourceGroup(object):
     @name.setter
     def name(self, value):
         self._name = value
+        self._grp_xml.set('name',value)
 
     @property
     def groupfilter(self):
