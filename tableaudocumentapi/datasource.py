@@ -133,7 +133,7 @@ class RelationParser(object):
     def get_relations(self):
         """Finds and return all relation elements for federated connections within the data source."""
 
-        relations = list(map(ConnectionRelation, self._dsxml.findall('./connection/relation')))
+        relations = list(map(ConnectionRelation, self._dsxml.findall('./connection//relation')))
         return relations
 
 
