@@ -10,7 +10,7 @@ class GroupFilter(object):
         member_split = self._member.split('].[') if self._member else []
         assign_member = bool(len(member_split) == 2)
         # we only assign member_datasource & member_column if the length of the split is 2 (== not hard-coded value)
-        self._member_datasource = member_split[0].strip('&quot;[').strip(']').strip('["') if assign_member else ""
+        self._member_datasource = member_split[0].replace('&quot;[','').strip(']').strip('["') if assign_member else ""
         self._member_column = member_split[1].strip('[').strip(']"') if assign_member else ""
 
     @property
