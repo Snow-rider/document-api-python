@@ -61,5 +61,5 @@ class ConnectionRelation(object):
 
     @staticmethod
     def get_relation_columns(relationxml):
-        columns = relationxml.find('columns').findall('column') if relationxml.find('columns') is not None else None
-        return True if columns is not None else False, columns
+        columns = relationxml.find('columns').findall('column') if relationxml.find('columns') else None
+        return columns is not None, columns

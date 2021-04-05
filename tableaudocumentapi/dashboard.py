@@ -51,7 +51,7 @@ class Dashboard(object):
 
     def get_names_of_dependency_datasources(self):
         sub_datasources = self._datasources.findall('./datasource') if \
-            self._datasources is not None else []
+            bool(self._datasources) else []
         datasource_names = list(dsxml.get('name') for dsxml in sub_datasources)
         return datasource_names
 

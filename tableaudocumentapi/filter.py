@@ -4,7 +4,7 @@ class GroupFilter(object):
 
     def __init__(self, groupfilterXMLelement):
         self._grpFilterXML = groupfilterXMLelement
-        self._level = self._grpFilterXML.get('level').strip('[').strip(']') if self._grpFilterXML.get('level') is not None else ""
+        self._level = self._grpFilterXML.get('level').strip('[').strip(']') if self._grpFilterXML.get('level') else ""
         self._member = self._grpFilterXML.get('member')
         # some members can be just hardcoded values, therefore this check
         member_split = self._member.split('].[') if self._member else []
@@ -60,9 +60,9 @@ class GroupFilterParent(GroupFilter):
         self._grpfilterXML = groupfilterParentXMLelement
         self._expression = self._grpfilterXML.get('expression') if self._grpfilterXML else None
         self._child_group_filters = list(map(GroupFilter, self._grpfilterXML.findall('.//groupfilter'))) if \
-            self._grpfilterXML.findall('.//groupfilter') is not None else []
+            bool(self._grpfilterXML.findall('.//groupfilter')) else []
         self._second_child_group_filters = list(map(GroupFilter, self._grpfilterXML.findall('./groupfilter/groupfilter'))) if \
-            self._grpfilterXML.findall('./groupfilter/groupfilter') is not None else []
+            bool(self._grpfilterXML.findall('./groupfilter/groupfilter')) else []
 
     @property
     def expression(self):
@@ -88,11 +88,11 @@ class Target(object):
 
     def __init__(self, targetxmlelement):
         self._tgxml = targetxmlelement
-        self._target_field = self._tgxml.get('field') if self._tgxml is not None else ""
+        self._target_field = self._tgxml.get('field') if self._tgxml else ""
         self._target_field_datasource = self._target_field.split('].[')[0].strip('[').strip(']') \
-            if self._target_field is not None else ""
+            if self._target_field else ""
         self._target_field_column = self._target_field.split('].[')[1].strip('[').strip(']') \
-            if self._target_field is not None else ""
+            if self._target_field else ""
 
     @property
     def target_field(self):
@@ -126,9 +126,9 @@ class Filter(object):
         self._on_datasource = self._on_datasource_and_column.split('].[')[0].strip('[').strip(']') if self._on_datasource_and_column else ""
         self._on_column = self._on_datasource_and_column.split('].[')[1].strip('[').strip(']') if self._on_datasource_and_column else ""
         self._target_xml = self._filterXML.find('./target')
-        self._target = Target(self._target_xml) if (self._target_xml is not None) else None
+        self._target = Target(self._target_xml) if self._target_xml else None
         self._groupfilter_XML = self._filterXML.find('./groupfilter')
-        self._groupfilter = GroupFilterParent(self._groupfilter_XML) if (self._groupfilter_XML is not None) else None
+        self._groupfilter = GroupFilterParent(self._groupfilter_XML) if self._groupfilter_XML else None
 
     @property
     def target(self):

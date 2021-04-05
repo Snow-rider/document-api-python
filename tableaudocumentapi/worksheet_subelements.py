@@ -128,7 +128,7 @@ class PaneEncodingChildElement(object):
 
     def __init__(self, encchildelxml):
         self._xml = encchildelxml
-        self._column_attribute = self._xml.get('column') if self._xml is not None else ""
+        self._column_attribute = self._xml.get('column') if self._xml else ""
 
     @property
     def column_attribute(self):
@@ -182,7 +182,8 @@ class WorksheetPaneCustomizedTooltip(object):
 
     def __init__(self, customizedtooltipxmlelement):
         self._xml = customizedtooltipxmlelement
-        self._formattedtext = list(map(PaneTooltipFormattedTextRun, self._xml.findall('./formatted-text/run'))) if self._xml is not None else []
+        self._formattedtext = list(map(PaneTooltipFormattedTextRun, self._xml.findall('./formatted-text/run'))) if \
+            bool(self._xml.findall('./formatted-text/run')) else []
 
     @property
     def formattedtext(self):
