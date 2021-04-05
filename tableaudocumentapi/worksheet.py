@@ -1,5 +1,8 @@
-from tableaudocumentapi.worksheet_view_subelements import DatasourceDependency, Filter, SliceColumn, Sort
-from tableaudocumentapi.worksheet_subelements import LayoutOptions, WorksheetPane, WorksheetStyleRule, WorksheetRowsOrCols, JoinLodExcludeOverrides
+from tableaudocumentapi.worksheet_view_subelements import SliceColumn, Sort
+from tableaudocumentapi.filter import Filter
+from tableaudocumentapi.datasource_dependency import DatasourceDependency
+from tableaudocumentapi.worksheet_subelements import LayoutOptions, WorksheetPane, WorksheetStyleRule, \
+    WorksheetRowsOrCols, JoinLodExcludeOverrides, JoinLodIncludeOverrides
 
 class Worksheet(object):
     """A class representing worksheet object."""
@@ -18,25 +21,41 @@ class Worksheet(object):
         self._panes = list(map(WorksheetPane, self._worksheetTableXmlElement.findall('./panes/pane')))
         self._rows = WorksheetRowsOrCols( self._worksheetTableXmlElement.find('rows'))
         self._cols = WorksheetRowsOrCols(self._worksheetTableXmlElement.find('cols'))
-        self._join_lod_exclude_overrides = JoinLodExcludeOverrides(self._worksheetTableXmlElement.find('join-lod-exclude-override'))
+        self._join_lod_exclude_overrides = JoinLodExcludeOverrides(self._worksheetTableXmlElement.find('join-lod-exclude-overrides'))
+        self._join_lod_include_overrides = JoinLodIncludeOverrides(
+            self._worksheetTableXmlElement.find('join-lod-include-overrides'))
 
         self._datasources = self._worksheetViewXmlElement.find('./datasources')
         self._datasource_dependencies = list(map(DatasourceDependency, self._worksheetViewXmlElement.findall('./datasource-dependencies')))
         self._filters = list(map(Filter, self._worksheetViewXmlElement.findall('./filter')))
-        self._manual_sorts = self._worksheetViewXmlElement.find('./manual-sort').get('column') if self._worksheetViewXmlElement.find('./manual-sort') is not None else None# TODO
+        self._manual_sort_xml = self._worksheetViewXmlElement.find('./manual-sort')
+        self._manual_sort = Sort(self._manual_sort_xml) if self._manual_sort_xml else None
         self._sorts = list(map(Sort, self._worksheetViewXmlElement.findall('./sort')))
+        self._natural_sort_xml = self._worksheetViewXmlElement.find('./natural-sort')
+        self._natural_sort = Sort(self._natural_sort_xml) if self._natural_sort_xml else None
+        self._computed_sort_xml = self._worksheetViewXmlElement.find('./computed-sort')
+        self._computed_sort = Sort(self._computed_sort_xml) if self._computed_sort_xml else None
+        self._alphabetic_sort_xml = self._worksheetViewXmlElement.find('./alphabetic-sort')
+        self._alphabetic_sort = Sort(self._alphabetic_sort_xml) if self._alphabetic_sort_xml else None
         self._slices_columns = list(map(SliceColumn, self._worksheetViewXmlElement.findall('./slices/column')))
-
         self._dependent_on_datasources = self.get_names_of_dependency_datasources()  # list of names
         self._datasources_dependent_on_columns = self.get_names_of_columns_per_datasource()
 
     @property
-    def manual_sorts(self):
-        return self._manual_sorts
+    def manual_sort(self):
+        return self._manual_sort
 
-    @manual_sorts.setter
-    def manual_sorts(self, value):
-        self._manual_sorts = value
+    @property
+    def natural_sort(self):
+        return self._natural_sort
+
+    @property
+    def computed_sort(self):
+        return self._computed_sort
+
+    @property
+    def alphabetic_sort(self):
+        return self._alphabetic_sort
 
     @property
     def worksheet_name(self):
@@ -99,6 +118,10 @@ class Worksheet(object):
         return self._join_lod_exclude_overrides
 
     @property
+    def join_lod_include_overrides(self):
+        return self._join_lod_include_overrides
+
+    @property
     def datasources(self):
         return self._datasources
 
@@ -109,10 +132,6 @@ class Worksheet(object):
     @property
     def filters(self):
         return self._filters
-
-    @property
-    def manual_sorts(self):
-        return self._manual_sorts
 
     @property
     def sorts(self):

@@ -1,7 +1,9 @@
 import re
 
+
 class WorksheetBucket(object):
-    """Class describing generic Bucket element in the worksheet. Also describes column in join-lod-exclude-overrides element."""
+    """Class describing generic Bucket element in the worksheet. Also describes column in join-lod-exclude-overrides element.
+    and join-lod-include-overrides"""
 
     def __init__(self, bucketxml):
         self._bucketxml = bucketxml
@@ -11,11 +13,11 @@ class WorksheetBucket(object):
     def bucket_text(self):
         return self._bucket_text
 
-
     @bucket_text.setter
     def bucket_text(self, value):
         self._bucket_text = value
         self._bucketxml.text = value
+
 
 class LayoutOptions(object):
     """Describes layout-options sub element of worksheet."""
@@ -43,12 +45,13 @@ class LayoutOptions(object):
                                               for field_name in to_be_replaced)
                     run_el_xml.text = new_run_el_text
 
+
 class WorksheetStyleRuleFormat(object):
     """Represents format xml element within style-rule."""
 
     def __init__(self, formatxmlelement):
         self._xml = formatxmlelement
-        self._field_text = self._xml.get('format')
+        self._field_text = self._xml.get('field')
 
     @property
     def field_text(self):
@@ -119,28 +122,13 @@ class WorksheetStyleRule(object):
     def formats(self):
         return self._formats
 
-class PaneEncodingText(object):
-    """text xml element within encodings."""
 
-    def __init__(self, etextxml):
-        self._xml = etextxml
-        self._column_attribute = self._xml.get('column')
+class PaneEncodingChildElement(object):
+    """Color, text, lod, tooltip or wedge-size xml element within encoding XMl element."""
 
-    @property
-    def column_attribute(self):
-        return self._column_attribute
-
-    @column_attribute.setter
-    def column_attribute(self, value):
-        self._column_attribute = value
-        self._xml.set('column', value)
-
-class PaneEncodingColor(object):
-    """color xml element within encodings."""
-
-    def __init__(self,ecolorxml):
-        self._xml = ecolorxml
-        self._column_attribute = self._xml.get('column')
+    def __init__(self, encchildelxml):
+        self._xml = encchildelxml
+        self._column_attribute = self._xml.get('column') if self._xml else ""
 
     @property
     def column_attribute(self):
@@ -150,14 +138,19 @@ class PaneEncodingColor(object):
     def column_attribute(self, value):
         self._column_attribute = value
         self._xml.set('column', value)
+
 
 class WorksheetPaneEncoding(object):
     """Represents encoding at worksheet/../panes/pane/encoding."""
 
     def __init__(self, encodingsxmlelement):
         self._xml = encodingsxmlelement
-        self._texts = list(map(PaneEncodingText, self._xml.findall('./text'))) if self._xml else []
-        self._colors = list(map(PaneEncodingColor, self._xml.findall('./color'))) if self._xml else []
+        self._texts = list(map(PaneEncodingChildElement, self._xml.findall('./text'))) if self._xml else []
+        self._colors = list(map(PaneEncodingChildElement, self._xml.findall('./color'))) if self._xml else []
+        self._tooltips = list(map(PaneEncodingChildElement, self._xml.findall('./tooltip'))) if self._xml else []
+        self._lods = list(map(PaneEncodingChildElement, self._xml.findall('./lod'))) if self._xml else []
+        self._wedge_sizes = list(map(PaneEncodingChildElement, self._xml.findall('./wedge-size'))) if self._xml else []
+        self._shapes = list(map(PaneEncodingChildElement, self._xml.findall('./shape'))) if self._xml else []
 
     @property
     def texts(self):
@@ -167,13 +160,30 @@ class WorksheetPaneEncoding(object):
     def colors(self):
         return self._colors
 
+    @property
+    def tooltips(self):
+        return self._tooltips
+
+    @property
+    def lods(self):
+        return self._lods
+
+    @property
+    def wedge_sizes(self):
+        return self._wedge_sizes
+
+    @property
+    def shapes(self):
+        return self._shapes
+
 
 class WorksheetPaneCustomizedTooltip(object):
     """Represents encoding at worksheet/../panes/pane/customized-tooltip."""
 
     def __init__(self, customizedtooltipxmlelement):
         self._xml = customizedtooltipxmlelement
-        self._formattedtext = list(map(PaneTooltipFormattedTextRun, self._xml.findall('./formatted-text/run'))) if self._xml is not None else []
+        self._formattedtext = list(map(PaneTooltipFormattedTextRun, self._xml.findall('./formatted-text/run'))) if \
+            bool(self._xml.findall('./formatted-text/run')) else []
 
     @property
     def formattedtext(self):
@@ -239,6 +249,7 @@ class WorksheetPane(object):
     def customized_tooltip(self):
         return self._customized_tooltip
 
+
 class WorksheetRowsOrCols(object):
     """Describes rows element in the worksheet.
     """
@@ -280,7 +291,20 @@ class WorksheetRowsOrCols(object):
             new_content = self._rowsorcolscontent.replace(matched, replacement)
             self.rowsorcolscontent = new_content
 
+
 class JoinLodExcludeOverrides(object):
+    """Describes join-lod-exclude-overrides element in the worksheet."""
+
+    def __init__(self, jeloxml):
+        self._xml = jeloxml
+        self._columns = list(map(WorksheetBucket, self._xml.findall('./column'))) if self._xml else None
+
+    @property
+    def columns(self):
+        return self._columns
+
+
+class JoinLodIncludeOverrides(object):
     """Describes join-lod-exclude-overrides element in the worksheet."""
 
     def __init__(self, jeloxml):

@@ -6,7 +6,7 @@ class MetadataRecord(object):
         """
         self._mtdrecord = metadata_recordxml
         self._remote_name = self._mtdrecord.find('remote-name').text
-        self._local_name = self._mtdrecord.find('local-name').text if self.mtd_record.find('local_name') is not None else None
+        self._local_name = self._mtdrecord.find('local-name').text if self.mtd_record.find('local_name') else ""
         self._remote_alias = self._mtdrecord.find('remote-alias').text
 
     @property
